@@ -1,5 +1,4 @@
-function TapControl(keymap, controls, repeatDelay, action) {
-	this._keymap = keymap;
+function TapControl(controls, repeatDelay, action) {
 	this._controls = controls;
 	this._canRepeat = true;
 	this._repeatDelay = repeatDelay;
@@ -7,18 +6,18 @@ function TapControl(keymap, controls, repeatDelay, action) {
 	this._action = action;
 }
 
-TapControl.prototype.pollInput = function(time) {
+TapControl.prototype.pollInput = function() {
 	var controlDown = false;
 	for (var i = 0; i < this._controls.length; ++i)
-		if (this._keymap[this._controls[i]].isDown)
+		if (keymap[this._controls[i]].isDown)
 			controlDown = true;
 
 	if (!this._canRepeat) {
 		if (!controlDown)
 			this._canRepeat = true;
 	} else if (controlDown) {
-		if (time > this._repeatAfter) {
-			this._repeatAfter = time + this._repeatDelay;
+		if (game.time.now > this._repeatAfter) {
+			this._repeatAfter = game.time.now + this._repeatDelay;
 			this._canRepeat = false;
 			this._action();
 		}

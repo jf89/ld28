@@ -13,9 +13,10 @@ var keymap = {
 	shuntRight: Phaser.Keyboard.D
 };
 var controls = [
-	new TapControl(keymap, ['shuntLeft'],  1000, shuntLeft),
-	new TapControl(keymap, ['shuntRight'], 1000, shuntRight)
+	new TapControl(['shuntLeft'],  1000, function() { shunt.left(); }),
+	new TapControl(['shuntRight'], 1000, function() { shunt.right(); })
 ];
+var shunt = new Shunt(500, 5);
 var player;
 
 function preload() {
@@ -32,8 +33,8 @@ function create() {
 
 	player = game.add.sprite(512, 512, 'player');
 	player.anchor.setTo(0.5, 0.5);
-	player.body.drag.x = 50;
-	player.body.drag.y = 50;
+	player.body.drag.x = 0;
+	player.body.drag.y = 0;
 
 	game.camera.follow(player);
 
@@ -43,13 +44,13 @@ function create() {
 
 function update() {
 	for (var i = 0; i < controls.length; ++i)
-		controls[i].pollInput(game.time.now);
+		controls[i].pollInput();
+
+	shunt.process();
 
 	var acceleration;
 	if (keymap.forward.isDown)
-		acceleration = 200;
-	else if (keymap.brake.isDown)
-		acceleration = -200;
+		acceleration = 400;
 	else
 		acceleration = 0;
 	player.body.acceleration.copyFrom(
@@ -63,20 +64,13 @@ function update() {
 		angularVelocity = 200;
 	else
 		angularVelocity = 0;
-
 	player.body.angularVelocity = angularVelocity;
-}
 
-function shunt(angle) {
-	var shunt = new Phaser.Point();
-	shunt.copyFrom(game.physics.velocityFromAngle(player.angle + angle, 500));
-	player.body.velocity.add(shunt.x, shunt.y);
-}
-
-function shuntLeft() {
-	shunt(-90);
-}
-
-function shuntRight() {
-	shunt(90);
+	if (keymap.brake.isDown) {
+		player.body.drag.x = 50;
+		player.body.drag.y = 50;
+	} else {
+		player.body.drag.x = 0;
+		player.body.drag.y = 0;
+	}
 }
