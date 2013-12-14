@@ -10,7 +10,6 @@ function generateMaze(width, height) {
 		for (var j = 0; j < height + 2; ++j)
 			maze[i][j] = i == 0 || j == 0 || i == width + 1 || j == height + 1 ? 16 : 0;
 	}
-	console.log(maze);
 	function visit(x, y) {
 		while (true) {
 			var unvisitedNeighbours = [];
@@ -47,5 +46,11 @@ function generateMaze(width, height) {
 	var x = Math.floor(Math.random() * width) + 1;
 	var y = Math.floor(Math.random() * height) + 1;
 	visit(x, y);
-	return maze;
+	var result = new Array(width);
+	for (var i = 0; i < width; ++i) {
+		result[i] = new Array(height);
+		for (var j = 0; j < height; ++j)
+			result[i][j] = maze[i + 1][j + 1];
+	}
+	return result;
 }

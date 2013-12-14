@@ -26,7 +26,7 @@ var playerBullets;
 
 function preload() {
 	//game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.tilemap('tilemap', null, createTileMap(256, 256), Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('tilemap', null, createTileMap(8, 8), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');
