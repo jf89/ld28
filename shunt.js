@@ -1,5 +1,5 @@
 function Shunt(shuntDuration, shuntSpeed) {
-	this._shunt = new Phaser.Point();
+	this._angle = 0;
 	this._shunting = false;
 	this._shuntDuration = shuntDuration;
 	this._shuntSpeed = shuntSpeed;
@@ -17,13 +17,9 @@ Shunt.prototype.right = function() {
 
 Shunt.prototype._doShunt = function(angle) {
 	if (this._shunting) {
-		this._shunt.x = 0;
-		this._shunt.y = 0;
 		this._shunting = false;
 	} else {
-		this._shunt.copyFrom(
-			game.physics.velocityFromAngle(player.angle + angle, this._shuntSpeed)
-		);
+		this._angle = Math.PI * angle / 180;
 		this._shunting = true;
 		this._stopAt = game.time.now + this._shuntDuration;
 	}
@@ -32,9 +28,20 @@ Shunt.prototype._doShunt = function(angle) {
 Shunt.prototype.process = function() {
 	if (this._shunting) {
 		if (game.time.now < this._stopAt) {
-			var coeff = (game.time.now - this._lastUpdate) / 1000;
-			player.x += this._shunt.x * coeff;
-			player.y += this._shunt.y * coeff;
+			var coeff = this._shuntSpeed * (game.time.now - this._lastUpdate) / 1000;
+			var shunt = new Phaser.Point();
+			shunt.copyFrom(player.body.velocity);
+
+			shunt.normalize();
+
+			player.x += (
+				Math.cos(this._angle) * shunt.x -
+				Math.sin(this._angle) * shunt.y
+			) * coeff;
+			player.y += (
+				Math.sin(this._angle) * shunt.x +
+				Math.cos(this._angle) * shunt.y
+			) * coeff;
 		} else {
 			this._shunting = false;
 		}
