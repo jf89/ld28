@@ -89,9 +89,9 @@ function update() {
 		player.body.drag.y = 0;
 	}
 
-	var x = layer.getTileX(player.x);
-	var y = layer.getTileY(player.y);
-	map.putTile(1, x, y);
+	//var x = layer.getTileX(player.x);
+	//var y = layer.getTileY(player.y);
+	//map.putTile(1, x, y);
 }
 
 function fireBullet() {
