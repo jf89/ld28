@@ -10,19 +10,23 @@ var keymap = {
 	right:      Phaser.Keyboard.D,
 	brake:      Phaser.Keyboard.S,
 	shuntLeft:  Phaser.Keyboard.Q,
-	shuntRight: Phaser.Keyboard.E
+	shuntRight: Phaser.Keyboard.E,
+	fire:       Phaser.Keyboard.SPACEBAR
 };
 var controls = [
 	new TapControl(['shuntLeft'],  1000, function() { shunt.left(); }),
-	new TapControl(['shuntRight'], 1000, function() { shunt.right(); })
+	new TapControl(['shuntRight'], 1000, function() { shunt.right(); }),
+	new TapControl(['fire'],       100,  fireBullet)
 ];
 var shunt = new Shunt(500, 250);
 var player;
+var playerBullets;
 
 function preload() {
 	game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'background.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
+	game.load.image('player-bullet', 'player-bullet.png');
 }
 
 function create() {
@@ -31,16 +35,23 @@ function create() {
 	layer = game.add.tilemapLayer(0, 0, 800, 600, tileset, map, 0);
 	layer.resizeWorld();
 
+	for (var key in keymap)
+		keymap[key] = game.input.keyboard.addKey(keymap[key]);
+
+	playerBullets = game.add.group();
+	playerBullets.createMultiple(30, 'player-bullet');
+	playerBullets.setAll('anchor.x', 0.8);
+	playerBullets.setAll('anchor.y', 0.5);
+	playerBullets.setAll('outOfBoundsKill', true);
+
 	player = game.add.sprite(512, 512, 'player');
 	player.anchor.setTo(0.5, 0.5);
 	player.body.drag.x = 0;
 	player.body.drag.y = 0;
-	player.body.maxVelocity = 100;
+	player.body.maxVelocity.x = 250;
+	player.body.maxVelocity.y = 250;
 
 	game.camera.follow(player);
-
-	for (var key in keymap)
-		keymap[key] = game.input.keyboard.addKey(keymap[key]);
 }
 
 function update() {
@@ -74,4 +85,11 @@ function update() {
 		player.body.drag.x = 0;
 		player.body.drag.y = 0;
 	}
+}
+
+function fireBullet() {
+	var bullet = playerBullets.getFirstExists(false);
+	bullet.reset(player.x, player.y);
+	bullet.rotation = player.rotation;
+	bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 400));
 }
