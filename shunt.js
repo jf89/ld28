@@ -4,6 +4,7 @@ function Shunt(shuntDuration, shuntSpeed) {
 	this._shuntDuration = shuntDuration;
 	this._shuntSpeed = shuntSpeed;
 	this._stopAt;
+	this._lastUpdate = 0;
 }
 
 Shunt.prototype.left = function() {
@@ -31,10 +32,12 @@ Shunt.prototype._doShunt = function(angle) {
 Shunt.prototype.process = function() {
 	if (this._shunting) {
 		if (game.time.now < this._stopAt) {
-			player.x += this._shunt.x;
-			player.y += this._shunt.y;
+			var coeff = (game.time.now - this._lastUpdate) / 1000;
+			player.x += this._shunt.x * coeff;
+			player.y += this._shunt.y * coeff;
 		} else {
 			this._shunting = false;
 		}
 	}
+	this._lastUpdate = game.time.now;
 }

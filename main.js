@@ -6,17 +6,17 @@ var layer;
 
 var keymap = {
 	forward:    Phaser.Keyboard.W,
-	left:       Phaser.Keyboard.Q,
-	right:      Phaser.Keyboard.E,
+	left:       Phaser.Keyboard.A,
+	right:      Phaser.Keyboard.D,
 	brake:      Phaser.Keyboard.S,
-	shuntLeft:  Phaser.Keyboard.A,
-	shuntRight: Phaser.Keyboard.D
+	shuntLeft:  Phaser.Keyboard.Q,
+	shuntRight: Phaser.Keyboard.E
 };
 var controls = [
 	new TapControl(['shuntLeft'],  1000, function() { shunt.left(); }),
 	new TapControl(['shuntRight'], 1000, function() { shunt.right(); })
 ];
-var shunt = new Shunt(500, 5);
+var shunt = new Shunt(500, 250);
 var player;
 
 function preload() {
@@ -35,6 +35,7 @@ function create() {
 	player.anchor.setTo(0.5, 0.5);
 	player.body.drag.x = 0;
 	player.body.drag.y = 0;
+	player.body.maxVelocity = 100;
 
 	game.camera.follow(player);
 
@@ -67,8 +68,8 @@ function update() {
 	player.body.angularVelocity = angularVelocity;
 
 	if (keymap.brake.isDown) {
-		player.body.drag.x = 50;
-		player.body.drag.y = 50;
+		player.body.drag.x = 250;
+		player.body.drag.y = 250;
 	} else {
 		player.body.drag.x = 0;
 		player.body.drag.y = 0;
