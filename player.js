@@ -1,17 +1,8 @@
-var keymap = {
-	forward:    Phaser.Keyboard.UP,
-	left:       Phaser.Keyboard.LEFT,
-	right:      Phaser.Keyboard.RIGHT,
-	brake:      Phaser.Keyboard.D,
-	shuntLeft:  Phaser.Keyboard.S,
-	shuntRight: Phaser.Keyboard.F,
-	fire:       Phaser.Keyboard.SPACEBAR
-};
-var controls = [
-	new TapControl(['shuntLeft'],  1000, playerShuntLeft),
-	new TapControl(['shuntRight'], 1000, playerShuntRight),
-	new TapControl(['fire'],       100,  playerFireBullet)
-];
+//var controls = [
+//	new TapControl(['shuntLeft'],  1000, playerShuntLeft),
+//	new TapControl(['shuntRight'], 1000, playerShuntRight),
+//	new TapControl(['fire'],       100,  playerFireBullet)
+//];
 
 
 function Player() {
@@ -28,21 +19,13 @@ function Player() {
 	game.camera.follow(this._sprite);
 
 	this._isDead = false;
-
-	for (var key in keymap)
-		keymap[key] = game.input.keyboard.addKey(keymap[key]);
 }
 
 Player.prototype.update = function() {
 	if (this._isDead)
 		return;
 
-	console.log('Got here');
-
 	game.physics.collide(enemyBullets, this._sprite, enemyBulletHitPlayer);
-
-	for (var i = 0; i < controls.length; ++i)
-		controls[i].pollInput();
 
 	this.shunt.update();
 
