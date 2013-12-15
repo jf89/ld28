@@ -1,17 +1,26 @@
 function Enemy(x, y) {
-	this._bullets = game.add.group();
-	this._bullets.createMultiple(50, 'enemy-bullet');
-	this._bullets.setAll('anchor.x', 0.8);
-	this._bullets.setAll('anchor.y', 0.5);
-	this._bullets.setAll('outOfBoundsKill', true);
 	this._sprite = game.add.sprite(x, y, 'enemy');
 	this._sprite.anchor.setTo(0.5, 0.5);
 	this._sprite.body.maxVelocity.x = 250;
 	this._sprite.body.maxVelocity.y = 250;
+	this._sprite.body.immovable = true;
+	this._sprite.body.setSize(8, 8, -12, -12);
+	this._nextFire = 0;
 }
 
 Enemy.prototype.update = function() {
 	var spr = this._sprite;
+
+	if (!spr.alive) {
+		this.die();
+		return;
+	}
+
+	if (map.getTile(layer.getTileX(spr.x), layer.getTileY(spr.y)) == TILE_EMPTY) {
+		this.die();
+		return;
+	}
+
 	var x = Math.floor(spr.x / 512);
 	var y = Math.floor(spr.y / 512);
 	var px = Math.floor(player.x / 512);
@@ -19,6 +28,9 @@ Enemy.prototype.update = function() {
 	var gx, gy;
 
 	var dist = Math.sqrt( (px - x) * (px -x)  +  (py - y) * (py - y) );
+	if (dist < 1024)
+		this.fire();
+
 	var goal = pathFinder.nextStep(x, y, px, py);
 	if ((x != px || y != py) && !(px == goal.x && py == gy && dist < 512)) {
 		gx = goal.x * 512 + 256;
@@ -68,4 +80,20 @@ Enemy.prototype.update = function() {
 	var goal = new Phaser.Point(spr.x + a.x, spr.y + a.y);
 
 	spr.rotation = game.physics.angleBetween(spr, goal);
+}
+
+Enemy.prototype.die = function() {
+	this._sprite.kill();
+}
+
+Enemy.prototype.fire = function() {
+	if (game.time.now > this._nextFire) {
+		var bullet = enemyBullets.getFirstExists(false);
+		if (bullet == null)
+			return;
+		bullet.reset(this._sprite.x, this._sprite.y);
+		bullet.rotation = this._sprite.rotation;
+		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
+		this._nextFire = game.time.now + 300;
+	}
 }

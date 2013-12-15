@@ -28,11 +28,14 @@ var shunt = new Shunt(500, 250);
 var pathFinder;
 var player;
 var playerBullets;
+var enemyBullets;
+
+var playerEmitter;
+var enemyEmitter;
 
 var enemy;
 
 function preload() {
-	//game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
@@ -56,18 +59,35 @@ function create() {
 	playerBullets.setAll('anchor.y', 0.5);
 	playerBullets.setAll('outOfBoundsKill', true);
 
+	enemyBullets = game.add.group();
+	enemyBullets.createMultiple(1000, 'enemy-bullet');
+	enemyBullets.setAll('anchor.x', 0.8);
+	enemyBullets.setAll('anchor.y', 0.5);
+
 	player = game.add.sprite(256, 256, 'player');
 	player.anchor.setTo(0.5, 0.5);
 	player.body.drag.x = 0;
 	player.body.drag.y = 0;
 	player.body.maxVelocity.x = 350;
 	player.body.maxVelocity.y = 350;
+	player.body.immovable = true;
+	player.body.setSize(8, 8, -12, -12);
+
+	playerEmitter = game.add.emitter(0, 0, 500);
+	playerEmitter.makeParticles('player-bullet');
+	playerEmitter.gravity = 0;
+	enemyEmitter = game.add.emitter(0, 0, 500);
+	enemyEmitter.makeParticles('enemy-bullet');
+	enemyEmitter.gravity = 0;
 
 	enemy = new Enemy(768, 256);
 	game.camera.follow(player);
 }
 
 function update() {
+	game.physics.collide(playerBullets, enemy._sprite, playerBulletHitEnemy);
+	game.physics.collide(enemyBullets, player, enemyBulletHitPlayer);
+
 	enemy.update();
 	for (var i = 0; i < controls.length; ++i)
 		controls[i].pollInput();
@@ -118,5 +138,20 @@ function fireBullet() {
 
 function gameOver() {
 	player.kill();
-	//alert('Game over!');
+	playerEmitter.x = player.x;
+	playerEmitter.y = player.y;
+	playerEmitter.start(true, 2000, null, 10);
+}
+
+function enemyBulletHitPlayer(player, bullet) {
+	bullet.kill();
+	gameOver();
+}
+
+function playerBulletHitEnemy(enemy, bullet) {
+	bullet.kill();
+	enemyEmitter.x = enemy.x;
+	enemyEmitter.y = enemy.y;
+	enemyEmitter.start(true, 2000, null, 10);
+	enemy.kill();
 }
