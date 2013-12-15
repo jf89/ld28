@@ -13,6 +13,14 @@ var enemyEmitter;
 var enemyContainer;
 var hud;
 
+var MAP_WIDTH  = 7;
+var MAP_HEIGHT = 7;
+var spawnerCoords = [
+	{ x: 0, y: 0 },
+	{ x: 6, y: 6 }
+];
+var playerCoords = { x: 3, y: 3 };
+
 function GameState() {
 	this._victory = false;
 }
@@ -32,7 +40,11 @@ GameState.prototype.init = function() {
 	layer.resizeWorld();
 
 	enemyContainer = new EnemyContainer();
-	enemyContainer.addEnemySpawner(256,                   256);
+	for (var i = 0; i < spawnerCoords.length; ++i)
+		enemyContainer.addEnemySpawner(
+			spawnerCoords[i].x * 512 + 256,
+			spawnerCoords[i].y * 512 + 256
+		);
 
 	playerBullets = game.add.group();
 	playerBullets.createMultiple(300, 'player-bullet');
@@ -52,7 +64,7 @@ GameState.prototype.init = function() {
 	enemyEmitter.makeParticles('enemy-debris');
 	enemyEmitter.gravity = 0;
 
-	player = new Player();
+	player = new Player(playerCoords.x * 512 + 256, playerCoords.y * 512 + 256);
 	hud = new HUD();
 }
 

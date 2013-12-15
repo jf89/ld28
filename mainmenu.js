@@ -7,18 +7,42 @@ var MAIN_MENU = [
 		text: 'Map Size',
 		action: [
 			{
-				text: 'Large',
+				text: 'Small',
 				action: function() {
-					MAP_WIDTH = 7;
-					MAP_HEIGHT = 7;
+					MAP_WIDTH  = 4;
+					MAP_HEIGHT = 4;
+					spawnerCoords = [
+						{ x: 0, y: 0 }
+					];
+					playerCoords = { x: 3, y: 3 };
 					state.dropLevel();
 				}
 			},
 			{
-				text: 'Small',
+				text: 'Medium',
 				action: function() {
-					MAP_WIDTH = 3;
-					MAP_HEIGHT = 3;
+					MAP_WIDTH = 7;
+					MAP_HEIGHT = 7;
+					spawnerCoords = [
+						{ x: 0, y: 0 },
+						{ x: 6, y: 6 }
+					];
+					playerCoords = { x: 3, y: 3 };
+					state.dropLevel();
+				}
+			},
+			{
+				text: 'Large',
+				action: function() {
+					MAP_WIDTH = 9;
+					MAP_HEIGHT = 9;
+					spawnerCoords = [
+						{ x: 0, y: 0 },
+						{ x: 0, y: 8 },
+						{ x: 8, y: 0 },
+						{ x: 8, y: 8 }
+					];
+					playerCoords = { x: 4, y: 4 };
 					state.dropLevel();
 				}
 			}

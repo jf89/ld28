@@ -1,7 +1,7 @@
-function Player() {
+function Player(x, y) {
 	this.shunt = new Shunt(500, 250);
 
-	this._sprite = game.add.sprite(MAP_WIDTH * 256, MAP_HEIGHT * 256, 'player');
+	this._sprite = game.add.sprite(x, y, 'player');
 	this._sprite.anchor.setTo(0.5, 0.5);
 	this._sprite.body.drag.x = 0;
 	this._sprite.body.drag.y = 0;
