@@ -28,3 +28,11 @@ EnemyContainer.prototype.update = function() {
 EnemyContainer.prototype.enemyById = function(id) {
 	return this._enemies[id];
 }
+
+function playerBulletHitEnemy(enemy, bullet) {
+	bullet.kill();
+	if (enemy.alive) {
+		var enemy = enemyContainer.enemyById(enemy.__id);
+		enemy.hit();
+	}
+}

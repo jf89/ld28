@@ -6,20 +6,6 @@ var MAP_HEIGHT = 7;
 
 var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var map;
-var tileset;
-var layer;
-
-var pathFinder;
-var player;
-var playerBullets;
-var enemyBullets;
-
-var playerEmitter;
-var enemyEmitter;
-
-var enemyContainer;
-
 var state;
 
 function preload() {
@@ -36,23 +22,17 @@ function preload() {
 
 function create() {
 	input.create();
-	state = new GameState();
+	state = new MenuState();
 	state.init();
 }
 
 function update() {
+	input.update();
 	state.update();
 }
 
-function enemyBulletHitPlayer(_player, bullet) {
-	bullet.kill();
-	player.hit();
-}
-
-function playerBulletHitEnemy(enemy, bullet) {
-	bullet.kill();
-	if (enemy.alive) {
-		var enemy = enemyContainer.enemyById(enemy.__id);
-		enemy.hit();
-	}
+function changeState(newState) {
+	state.destroy();
+	newState.init();
+	state = newState;
 }

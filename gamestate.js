@@ -55,7 +55,9 @@ GameState.prototype.init = function() {
 }
 
 GameState.prototype.update = function() {
-	input.update();
 	player.update();
 	enemyContainer.update();
+}
+
+GameState.prototype.destroy = function() {
 }

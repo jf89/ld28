@@ -11,7 +11,6 @@ var controls;
 
 var input = {
 	create: function() {
-			console.log('Got here');
 			for (var key in keymap)
 				keymap[key] = game.input.keyboard.addKey(keymap[key]);
 		},

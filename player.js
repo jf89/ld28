@@ -1,10 +1,3 @@
-//var controls = [
-//	new TapControl(['shuntLeft'],  1000, playerShuntLeft),
-//	new TapControl(['shuntRight'], 1000, playerShuntRight),
-//	new TapControl(['fire'],       100,  playerFireBullet)
-//];
-
-
 function Player() {
 	this.shunt = new Shunt(500, 250);
 
@@ -83,16 +76,11 @@ Player.prototype.die = function () {
 		playerEmitter.y = this._sprite.y;
 		playerEmitter.start(true, 2000, null, 10);
 	}
+	if (!this._isDead)
+		this._isDead = true;
 }
 
-function playerFireBullet() {
-	player.fireBullet();
-}
-
-function playerShuntLeft() {
-	player.shunt.left();
-}
-
-function playerShuntRight() {
-	player.shunt.right();
+function enemyBulletHitPlayer(_player, bullet) {
+	bullet.kill();
+	player.hit();
 }
