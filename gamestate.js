@@ -11,8 +11,10 @@ var playerEmitter;
 var enemyEmitter;
 
 var enemyContainer;
+var hud;
 
 function GameState() {
+	this._victory = false;
 }
 
 GameState.prototype.init = function() {
@@ -31,9 +33,6 @@ GameState.prototype.init = function() {
 
 	enemyContainer = new EnemyContainer();
 	enemyContainer.addEnemySpawner(256,                   256);
-	enemyContainer.addEnemySpawner(256,                   MAP_HEIGHT * 512 - 256);
-	enemyContainer.addEnemySpawner(MAP_WIDTH * 512 - 256, 256);
-	enemyContainer.addEnemySpawner(MAP_WIDTH * 512 - 256, MAP_HEIGHT * 512 - 256);
 
 	playerBullets = game.add.group();
 	playerBullets.createMultiple(300, 'player-bullet');
@@ -54,11 +53,22 @@ GameState.prototype.init = function() {
 	enemyEmitter.gravity = 0;
 
 	player = new Player();
+	hud = new HUD();
 }
 
 GameState.prototype.update = function() {
-	player.update();
-	enemyContainer.update();
+	if (!this._victory) {
+		player.update();
+		enemyContainer.update();
+		hud.update();
+		if (enemyContainer._enemies.length == 0 && !player._isDead) {
+			this._victory = true;
+			this._victoryTimeout = game.time.now + 1500;
+		}
+	} else {
+		if (game.time.now > this._victoryTimeout)
+			changeState(new MenuState('VICTORY!', GAME_OVER_MENU, backgroundCleanup));
+	}
 }
 
 GameState.prototype.destroy = function() {
@@ -66,10 +76,12 @@ GameState.prototype.destroy = function() {
 }
 
 function backgroundCleanup() {
+	hud.destroy();
 	map.destroy();
 	layer.destroy();
 	playerBullets.destroy();
 	enemyBullets.destroy();
 	playerEmitter.destroy();
 	enemyEmitter.destroy();
+	player.destroy();
 }

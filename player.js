@@ -13,6 +13,9 @@ function Player() {
 
 	this._isDead = false;
 	this._gameOverDelay = 0;
+
+	this.shields = 3;
+	this.shieldRespawnDelay;
 }
 
 Player.prototype.update = function() {
@@ -20,6 +23,11 @@ Player.prototype.update = function() {
 		if (game.time.now > this._gameOverDelay)
 			changeState(new MenuState('Game Over', GAME_OVER_MENU, backgroundCleanup));
 		return;
+	}
+
+	if (this.shields < 3 && game.time.now > this.shieldRespawnDelay) {
+		this.shields += 1;
+		this.shieldRespawnDelay = game.time.now + 5000;
 	}
 
 	game.physics.collide(enemyBullets, this._sprite, enemyBulletHitPlayer);
@@ -63,17 +71,27 @@ Player.prototype.fireBullet = function() {
 		var bullet = playerBullets.getFirstExists(false);
 		if (bullet === null)
 			return;
+		sound.shoot.play();
 		bullet.reset(this._sprite.x, this._sprite.y);
 		bullet.rotation = this._sprite.rotation;
 		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
 	}
 }
 
-Player.prototype.hit = function () {
-	this.die();
+Player.prototype.hit = function() {
+	this.shields -= 1;
+	if (this.shields == 0)
+		this.die();
+	else {
+		sound.hit.play();
+		this.shieldRespawnDelay = game.time.now + 5000;
+		playerEmitter.x = this._sprite.x;
+		playerEmitter.y = this._sprite.y;
+		playerEmitter.start(true, 2000, null, 3);
+	}
 }
 
-Player.prototype.die = function () {
+Player.prototype.die = function() {
 	if (this._sprite.alive) {
 		this._sprite.kill();
 		this._sprite.destroy();
@@ -82,9 +100,14 @@ Player.prototype.die = function () {
 		playerEmitter.start(true, 2000, null, 10);
 	}
 	if (!this._isDead) {
+		sound.gameover.play();
 		this._gameOverDelay = game.time.now + 1000;
 		this._isDead = true;
 	}
+}
+
+Player.prototype.destroy = function() {
+	if (this._sprite.alive) this._sprite.destroy();
 }
 
 function enemyBulletHitPlayer(_player, bullet) {

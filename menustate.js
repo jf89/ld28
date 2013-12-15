@@ -1,7 +1,8 @@
 function MenuState(title, menu, backgroundCleanup) {
 	this.text = null;
+	this._titleStyle  = { font: '60px Arial', fill: '#f00', align: 'center' };
 	this._normalStyle = { font: '40px Arial', fill: '#00c', align: 'center' };
-	this._hoverStyle =  { font: '45px Arial', fill: '#09c', align: 'center' };
+	this._hoverStyle  = { font: '45px Arial', fill: '#09c', align: 'center' };
 	this._backgroundCleanup = backgroundCleanup === undefined ? function() {} : backgroundCleanup;
 
 	this._title = title;
@@ -18,6 +19,13 @@ MenuState.prototype.init = function() {
 		new TapControl(['fire'],      0, function() { state.select() })
 	];
 
+	this._title = game.add.text(
+		game.camera.x + SCREEN_WIDTH / 2,
+		game.camera.y + 150,
+		this._title,
+		this._titleStyle
+	);
+	this._title.anchor.setTo(0.5, 0.5);
 	this.drawMenu();
 }
 
@@ -26,8 +34,8 @@ MenuState.prototype.drawMenu = function() {
 	for (var i = 0; i < this._options.length; ++i) {
 		this._options[i] = {};
 		this._options[i].text = game.add.text(
-			game.world.centerX,
-			game.world.centerY + i * 100,
+			game.camera.x + SCREEN_WIDTH / 2,
+			game.camera.y + SCREEN_HEIGHT / 2 + i * 100,
 			this._menu[i].text,
 			this._normalStyle
 		);
@@ -51,6 +59,7 @@ MenuState.prototype.clearMenu = function() {
 }
 
 MenuState.prototype.move = function(down) {
+	sound.menu.play();
 	if (down)
 		this._currentOption += 1;
 	else
@@ -60,6 +69,7 @@ MenuState.prototype.move = function(down) {
 }
 
 MenuState.prototype.select = function() {
+	sound.menu.play();
 	var action = this._options[this._currentOption].action;
 	if (typeof(action) == 'function')
 		action();
@@ -83,4 +93,5 @@ MenuState.prototype.update = function() {
 MenuState.prototype.destroy = function() {
 	this._backgroundCleanup();
 	this.clearMenu();
+	this._title.destroy();
 }

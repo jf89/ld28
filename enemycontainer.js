@@ -1,5 +1,6 @@
 function EnemyContainer() {
 	this._enemies = new Array();
+	this.enemiesKilled = 0;
 }
 
 EnemyContainer.prototype.addEnemy = function(x, y) {
@@ -18,6 +19,7 @@ EnemyContainer.prototype.removeEnemy = function(id) {
 	this._enemies[id].setId(id);
 	this._enemies.pop();
 	enemyToKill.die();
+	this.enemiesKilled += 1;
 }
 
 EnemyContainer.prototype.update = function() {

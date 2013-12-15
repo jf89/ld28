@@ -23,5 +23,21 @@ var MAIN_MENU = [
 				}
 			}
 		]
+	},
+	{
+		text: 'Display',
+		action: [
+			{
+				text: 'Attempt Fullscreen',
+				action: function() {
+					game.stage.scale.startFullScreen();
+					state.dropLevel();
+				}
+			},
+			{
+				text: 'Go Back',
+				action: function() { state.dropLevel(); }
+			}
+		]
 	}
 ];

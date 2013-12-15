@@ -17,10 +17,13 @@ function preload() {
 	game.load.image('enemy-bullet', 'enemy-bullet.png');
 	game.load.image('enemy-debris', 'enemy-debris.png');
 	game.load.image('enemy-spawner', 'spawner.png');
+
+	sound.load();
 }
 
 function create() {
 	input.create();
+	sound.create();
 	state = new MenuState('Gauntlet', MAIN_MENU);
 	state.init();
 }

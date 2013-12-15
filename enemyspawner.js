@@ -23,6 +23,9 @@ EnemySpawner.prototype.update = function() {
 	game.physics.collide(playerBullets, this._sprite, playerBulletHitEnemy);
 
 	if (game.time.now > this._nextSpawn) {
+		if (this._sprite.x>game.camera.x && this._sprite.x<game.camera.x+SCREEN_WIDTH &&
+		    this._sprite.y>game.camera.y && this._sprite.y<game.camera.y+SCREEN_HEIGHT)
+			sound.spawn.play();
 		this._nextSpawn = game.time.now + 2500;
 		this._container.addEnemy(this._sprite.x, this._sprite.y);
 	}
@@ -30,6 +33,7 @@ EnemySpawner.prototype.update = function() {
 
 EnemySpawner.prototype.die = function() {
 	if (!this._isDead) {
+		sound.spawnerDeath.play();
 		enemyEmitter.x = this._sprite.x;
 		enemyEmitter.y = this._sprite.y;
 		enemyEmitter.start(true, 2000, null, 20);
@@ -41,6 +45,7 @@ EnemySpawner.prototype.die = function() {
 
 EnemySpawner.prototype.hit = function() {
 	this._health -= 1;
+	sound.spawnerHit.play();
 	if (this._health) {
 		enemyEmitter.x = this._sprite.x;
 		enemyEmitter.y = this._sprite.y;

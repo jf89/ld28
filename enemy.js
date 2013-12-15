@@ -111,6 +111,9 @@ Enemy.prototype.fire = function() {
 		var bullet = enemyBullets.getFirstExists(false);
 		if (bullet == null)
 			return;
+		if (this._sprite.x>game.camera.x && this._sprite.x<game.camera.x+SCREEN_WIDTH &&
+		    this._sprite.y>game.camera.y && this._sprite.y<game.camera.y+SCREEN_HEIGHT)
+			sound.shoot.play();
 		bullet.reset(this._sprite.x, this._sprite.y);
 		bullet.rotation = this._sprite.rotation;
 		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
@@ -119,5 +122,8 @@ Enemy.prototype.fire = function() {
 }
 
 Enemy.prototype.hit = function() {
+	if (this._sprite.x>game.camera.x && this._sprite.x<game.camera.x+SCREEN_WIDTH &&
+	    this._sprite.y>game.camera.y && this._sprite.y<game.camera.y+SCREEN_HEIGHT)
+		sound.hit.play();
 	this._container.removeEnemy(this._id);
 }

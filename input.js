@@ -3,9 +3,9 @@ var keymap = {
 	left:       Phaser.Keyboard.LEFT,
 	right:      Phaser.Keyboard.RIGHT,
 	downarrow:  Phaser.Keyboard.DOWN,
-	brake:      Phaser.Keyboard.D,
-	shuntLeft:  Phaser.Keyboard.S,
-	shuntRight: Phaser.Keyboard.F,
+	brake:      Phaser.Keyboard.S,
+	shuntLeft:  Phaser.Keyboard.A,
+	shuntRight: Phaser.Keyboard.D,
 	fire:       Phaser.Keyboard.SPACEBAR
 };
 var controls;
