@@ -1,9 +1,6 @@
 var SCREEN_WIDTH  = 1024;
 var SCREEN_HEIGHT = 768;
 
-var MAP_WIDTH = 7;
-var MAP_HEIGHT = 7;
-
 var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var state;

@@ -11,63 +11,63 @@ function createTileMap(width, height) {
 			switch (maze[i][j]) {
 				case NORTH:
 					rotFun = identity;
-					mazePiece = MAZE_PIECES.deadend[0];
+					mazePiece = randomChoice(MAZE_PIECES.deadend);
 					break;
 				case EAST:
 					rotFun = rotateClockwise;
-					mazePiece = MAZE_PIECES.deadend[0];
+					mazePiece = randomChoice(MAZE_PIECES.deadend);
 					break;
 				case SOUTH:
 					rotFun = fullRotate;
-					mazePiece = MAZE_PIECES.deadend[0];
+					mazePiece = randomChoice(MAZE_PIECES.deadend);
 					break;
 				case WEST:
 					rotFun = rotateCounterClockwise;
-					mazePiece = MAZE_PIECES.deadend[0];
+					mazePiece = randomChoice(MAZE_PIECES.deadend);
 					break;
 				case NORTH | SOUTH:
 					rotFun = identity;
-					mazePiece = MAZE_PIECES.straight[0];
+					mazePiece = randomChoice(MAZE_PIECES.straight);
 					break;
 				case EAST | WEST:
 					rotFun = rotateClockwise;
-					mazePiece = MAZE_PIECES.straight[0];
+					mazePiece = randomChoice(MAZE_PIECES.straight);
 					break
 				case NORTH | EAST:
 					rotFun = identity;
-					mazePiece = MAZE_PIECES.corner[0];
+					mazePiece = randomChoice(MAZE_PIECES.corner);
 					break;
 				case EAST | SOUTH:
 					rotFun = rotateClockwise;
-					mazePiece = MAZE_PIECES.corner[0];
+					mazePiece = randomChoice(MAZE_PIECES.corner);
 					break;
 				case SOUTH | WEST:
 					rotFun = fullRotate;
-					mazePiece = MAZE_PIECES.corner[0];
+					mazePiece = randomChoice(MAZE_PIECES.corner);
 					break;
 				case WEST | NORTH:
 					rotFun = rotateCounterClockwise;
-					mazePiece = MAZE_PIECES.corner[0];
+					mazePiece = randomChoice(MAZE_PIECES.corner);
 					break;
 				case WEST | NORTH | EAST:
 					rotFun = identity;
-					mazePiece = MAZE_PIECES.junction[0];
+					mazePiece = randomChoice(MAZE_PIECES.junction);
 					break;
 				case NORTH | EAST | SOUTH:
 					rotFun = rotateClockwise;
-					mazePiece = MAZE_PIECES.junction[0];
+					mazePiece = randomChoice(MAZE_PIECES.junction);
 					break;
 				case EAST | SOUTH | WEST:
 					rotFun = fullRotate;
-					mazePiece = MAZE_PIECES.junction[0];
+					mazePiece = randomChoice(MAZE_PIECES.junction);
 					break;
 				case SOUTH | WEST | NORTH:
 					rotFun = rotateCounterClockwise;
-					mazePiece = MAZE_PIECES.junction[0];
+					mazePiece = randomChoice(MAZE_PIECES.junction);
 					break;
 				case NORTH | SOUTH | EAST | WEST:
 					rotFun = identity;
-					mazePiece = MAZE_PIECES.crossroad[0];
+					mazePiece = randomChoice(MAZE_PIECES.crossroad);
 					break;
 			}
 			for (var k = 0; k < 16; ++k)
@@ -156,4 +156,8 @@ function rotateCounterClockwise(x, y, mazePiece) {
 
 function fullRotate(x, y, mazePiece) {
 	return identity(15 - x, 15 - y, mazePiece);
+}
+
+function randomChoice(xs) {
+	return xs[Math.floor(Math.random() * xs.length)];
 }
