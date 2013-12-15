@@ -33,7 +33,7 @@ var enemyBullets;
 var playerEmitter;
 var enemyEmitter;
 
-var enemy;
+var enemyContainer;
 
 function preload() {
 	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
@@ -82,15 +82,18 @@ function create() {
 	enemyEmitter.makeParticles('enemy-debris');
 	enemyEmitter.gravity = 0;
 
-	enemy = new Enemy(768, 256);
+	enemyContainer = new EnemyContainer();
+	for (var i = 0; i < MAP_WIDTH; ++i)
+		for (var j = 0; j < MAP_HEIGHT; ++j)
+			if (i != 0 || j != 0)
+				enemyContainer.addEnemy(i * 512 + 256, j * 512 + 256);
 	game.camera.follow(player);
 }
 
 function update() {
-	game.physics.collide(playerBullets, enemy._sprite, playerBulletHitEnemy);
 	game.physics.collide(enemyBullets, player, enemyBulletHitPlayer);
+	enemyContainer.update();
 
-	enemy.update();
 	for (var i = 0; i < controls.length; ++i)
 		controls[i].pollInput();
 
@@ -152,8 +155,5 @@ function enemyBulletHitPlayer(player, bullet) {
 
 function playerBulletHitEnemy(enemy, bullet) {
 	bullet.kill();
-	enemyEmitter.x = enemy.x;
-	enemyEmitter.y = enemy.y;
-	enemyEmitter.start(true, 2000, null, 10);
-	enemy.kill();
+	enemyContainer.removeEnemy(enemy.__id);
 }

@@ -1,4 +1,4 @@
-function Enemy(x, y) {
+function Enemy(x, y, id, container) {
 	this._sprite = game.add.sprite(x, y, 'enemy');
 	this._sprite.anchor.setTo(0.5, 0.5);
 	this._sprite.body.maxVelocity.x = 250;
@@ -6,29 +6,41 @@ function Enemy(x, y) {
 	this._sprite.body.immovable = true;
 	this._sprite.body.setSize(8, 8, -12, -12);
 	this._nextFire = 0;
+	this.setId(id);
+	this._isDead = false;
+	this._container = container;
+}
+
+Enemy.prototype.setId = function(id) {
+	this._id = id;
+	this._sprite.__id = id;
 }
 
 Enemy.prototype.update = function() {
 	var spr = this._sprite;
 
-	if (!spr.alive) {
-		this.die();
+	if (this._isDead)
+		return;
+
+	if (map.getTile(layer.getTileX(spr.x), layer.getTileY(spr.y)) == TILE_EMPTY) {
+		this._container.removeEnemy(this._id);
 		return;
 	}
 
-	if (map.getTile(layer.getTileX(spr.x), layer.getTileY(spr.y)) == TILE_EMPTY) {
-		this.die();
-		return;
-	}
+	game.physics.collide(playerBullets, spr, playerBulletHitEnemy);
 
 	var x = Math.floor(spr.x / 512);
 	var y = Math.floor(spr.y / 512);
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (x >= MAP_WIDTH)  x = MAP_WIDTH  - 1;
+	if (y >= MAP_HEIGHT) y = MAP_HEIGHT - 1;
 	var px = Math.floor(player.x / 512);
 	var py = Math.floor(player.y / 512);
 	var gx, gy;
 
-	var dist = Math.sqrt( (px - x) * (px -x)  +  (py - y) * (py - y) );
-	if (dist < 1024)
+	var dist = Math.sqrt((player.x-spr.x)*(player.x-spr.x) + (player.y-spr.y)*(player.y-spr.y));
+	if (dist < 768)
 		this.fire();
 
 	var goal = pathFinder.nextStep(x, y, px, py);
@@ -83,7 +95,13 @@ Enemy.prototype.update = function() {
 }
 
 Enemy.prototype.die = function() {
-	this._sprite.kill();
+	if (!this._isDead) {
+		enemyEmitter.x = this._sprite.x;
+		enemyEmitter.y = this._sprite.y;
+		enemyEmitter.start(true, 2000, null, 10);
+		this._isDead = true;
+		this._sprite.kill();
+	}
 }
 
 Enemy.prototype.fire = function() {
