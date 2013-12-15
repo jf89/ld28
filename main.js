@@ -1,5 +1,9 @@
 var SCREEN_WIDTH  = 1024;
 var SCREEN_HEIGHT = 768;
+
+var MAP_WIDTH = 8;
+var MAP_HEIGHT = 8;
+
 var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var map;
@@ -29,7 +33,7 @@ var enemy;
 
 function preload() {
 	//game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.tilemap('tilemap', null, createTileMap(8, 8), Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');

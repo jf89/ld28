@@ -11,24 +11,61 @@ function Enemy(x, y) {
 }
 
 Enemy.prototype.update = function() {
-	var x = Math.floor(this._sprite.x / 512);
-	var y = Math.floor(this._sprite.y / 512);
+	var spr = this._sprite;
+	var x = Math.floor(spr.x / 512);
+	var y = Math.floor(spr.y / 512);
 	var px = Math.floor(player.x / 512);
 	var py = Math.floor(player.y / 512);
 	var gx, gy;
-	if (x != px || y != py) {
-		var goal = pathFinder.nextStep(x, y, px, py);
+
+	var dist = Math.sqrt( (px - x) * (px -x)  +  (py - y) * (py - y) );
+	var goal = pathFinder.nextStep(x, y, px, py);
+	if ((x != px || y != py) && !(px == goal.x && py == gy && dist < 512)) {
 		gx = goal.x * 512 + 256;
 		gy = goal.y * 512 + 256;
 	} else {
 		gx = player.x;
 		gy = player.y;
 	}
-	this._sprite.body.acceleration.x = gx - this._sprite.x;
-	this._sprite.body.acceleration.y = gy - this._sprite.y;
-	this._sprite.body.acceleration.normalize();
-	this._sprite.body.acceleration.x *= 250;
-	this._sprite.body.acceleration.y *= 250;
-	var goal = new Phaser.Point(gx, gy);
-	this._sprite.rotation = game.physics.angleBetween(this._sprite, goal);
+
+	// I cannot believe this works.
+	var a = new Phaser.Point();
+	var k = 10;
+	var v = spr.body.velocity;
+	gx -= spr.x;
+	gy -= spr.y;
+	a.x = 2 * k * k * gx  -  k * v.x;
+	a.y = 2 * k * k * gy  -  k * v.y;
+	a.normalize();
+	a.x *= 250;
+	a.y *= 250;
+
+	var avoidance = new Phaser.Point();
+	var minDist = 1000;
+	for (var i = 0; i < 16; ++i)
+		for (var j = 0; j < 16; ++j) {
+			var mapx = Math.floor(spr.x / 32) - 8 + i;
+			var mapy = Math.floor(spr.y / 32) - 8 + j;
+			if (mapx < 0) continue;
+			if (mapy < 0) continue;
+			if (mapx >= MAP_WIDTH * 16) continue;
+			if (mapy >= MAP_HEIGHT * 16) continue;
+			if (map.getTile(mapx, mapy) == TILE_EMPTY) {
+				var dx = spr.x - (mapx * 32 + 16);
+				var dy = spr.y - (mapy * 32 + 16);
+				var dist = Math.sqrt(dx*dx + dy*dy);
+				if (dist < minDist)
+					minDist = dist;
+				dist *= dist;
+				avoidance.x += 1000/dist * dx;
+				avoidance.y += 1000/dist * dy;
+			}
+		}
+	a.x += avoidance.x;
+	a.y += avoidance.y;
+
+	spr.body.acceleration.copyFrom(a);
+	var goal = new Phaser.Point(spr.x + a.x, spr.y + a.y);
+
+	spr.rotation = game.physics.angleBetween(spr, goal);
 }
