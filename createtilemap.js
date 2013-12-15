@@ -79,6 +79,46 @@ function createTileMap(width, height) {
 				}
 		}
 
+	var dy = 16 * width;
+	for (var i = 1; i < width * 16 - 1; ++i)
+		for (var j = 1; j < height * 16 - 1; j ++) {
+			var datapos = j * dy + i;
+			if (data[datapos] == 2) {
+				var tl = datapos - dy - 1;
+				var tr = datapos - dy + 1;
+				var bl = datapos + dy - 1;
+				var br = datapos + dy + 1;
+				var t  = datapos - dy;
+				var b  = datapos + dy;
+				var l  = datapos - 1;
+				var r  = datapos + 1;
+				if (data[t] == 1 && data[r] == 1)
+					data[datapos] = TILE_NE;
+				else if (data[t] == 1 && data[l] == 1)
+					data[datapos] = TILE_NW;
+				else if (data[b] == 1 && data[r] == 1)
+					data[datapos] = TILE_SE;
+				else if (data[b] == 1 && data[l] == 1)
+					data[datapos] = TILE_SW;
+				else if (data[t] == 1)
+					data[datapos] = TILE_N;
+				else if (data[b] == 1)
+					data[datapos] = TILE_S;
+				else if (data[l] == 1)
+					data[datapos] = TILE_W;
+				else if (data[r] == 1)
+					data[datapos] = TILE_E;
+				else if (data[tl] == 1)
+					data[datapos] = TILE_CNW;
+				else if (data[tr] == 1)
+					data[datapos] = TILE_CNE;
+				else if (data[bl] == 1)
+					data[datapos] = TILE_CSW;
+				else if (data[br] == 1)
+					data[datapos] = TILE_CSE;
+			}
+		}
+
 	var tileMap = {
 		layers: [
 			{

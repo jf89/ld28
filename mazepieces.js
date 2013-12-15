@@ -39,7 +39,6 @@ var MAZE_PIECES = {
 			1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1
 		]
 	],
-	// CORNER
 	corner: [
 		[
 			1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
@@ -101,3 +100,18 @@ var MAZE_PIECES = {
 		]
 	]
 }
+
+var TILE_EMPTY = 1;
+var TILE_BACKGROUND = 2;
+var TILE_N = 3;
+var TILE_E = 4;
+var TILE_S = 5;
+var TILE_W = 6;
+var TILE_NW = 7;
+var TILE_NE = 8;
+var TILE_SE = 9;
+var TILE_SW = 10;
+var TILE_CNW = 11;
+var TILE_CNE = 12;
+var TILE_CSE = 13;
+var TILE_CSW = 14;

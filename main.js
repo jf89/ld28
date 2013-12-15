@@ -1,5 +1,5 @@
-var SCREEN_WIDTH  = 800;
-var SCREEN_HEIGHT = 600;
+var SCREEN_WIDTH  = 1024;
+var SCREEN_HEIGHT = 768;
 var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var map;
@@ -26,7 +26,7 @@ var playerBullets;
 
 function preload() {
 	//game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.tilemap('tilemap', null, createTileMap(8, 8), Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('tilemap', null, createTileMap(4, 4), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');
@@ -51,8 +51,8 @@ function create() {
 	player.anchor.setTo(0.5, 0.5);
 	player.body.drag.x = 0;
 	player.body.drag.y = 0;
-	player.body.maxVelocity.x = 250;
-	player.body.maxVelocity.y = 250;
+	player.body.maxVelocity.x = 350;
+	player.body.maxVelocity.y = 350;
 
 	game.camera.follow(player);
 }
@@ -65,7 +65,7 @@ function update() {
 
 	var acceleration;
 	if (keymap.forward.isDown)
-		acceleration = 400;
+		acceleration = 300;
 	else
 		acceleration = 0;
 	player.body.acceleration.copyFrom(
