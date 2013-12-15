@@ -1,5 +1,5 @@
-var SCREEN_WIDTH  = 800;
-var SCREEN_HEIGHT = 600;
+var SCREEN_WIDTH  = 1024;
+var SCREEN_HEIGHT = 768;
 
 var MAP_WIDTH = 7;
 var MAP_HEIGHT = 7;

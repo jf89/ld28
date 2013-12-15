@@ -1,6 +1,6 @@
 function TapControl(controls, repeatDelay, action) {
 	this._controls = controls;
-	this._canRepeat = true;
+	this._canRepeat = false;
 	this._repeatDelay = repeatDelay;
 	this._repeatAfter = 0;
 	this._action = action;
