@@ -21,15 +21,20 @@ var controls = [
 	new TapControl(['fire'],       100,  fireBullet)
 ];
 var shunt = new Shunt(500, 250);
+var pathFinder;
 var player;
 var playerBullets;
 
+var enemy;
+
 function preload() {
 	//game.load.tilemap('tilemap', 'tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.tilemap('tilemap', null, createTileMap(4, 4), Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('tilemap', null, createTileMap(8, 8), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');
+	game.load.image('enemy', 'enemy.png');
+	game.load.image('enemy-bullet', 'enemy-bullet.png');
 }
 
 function create() {
@@ -47,17 +52,19 @@ function create() {
 	playerBullets.setAll('anchor.y', 0.5);
 	playerBullets.setAll('outOfBoundsKill', true);
 
-	player = game.add.sprite(512, 512, 'player');
+	player = game.add.sprite(256, 256, 'player');
 	player.anchor.setTo(0.5, 0.5);
 	player.body.drag.x = 0;
 	player.body.drag.y = 0;
 	player.body.maxVelocity.x = 350;
 	player.body.maxVelocity.y = 350;
 
+	enemy = new Enemy(768, 256);
 	game.camera.follow(player);
 }
 
 function update() {
+	enemy.update();
 	for (var i = 0; i < controls.length; ++i)
 		controls[i].pollInput();
 
@@ -74,9 +81,9 @@ function update() {
 
 	var angularVelocity;
 	if (keymap.left.isDown)
-		angularVelocity = -200;
+		angularVelocity = -250;
 	else if (keymap.right.isDown)
-		angularVelocity = 200;
+		angularVelocity = 250;
 	else
 		angularVelocity = 0;
 	player.body.angularVelocity = angularVelocity;
@@ -89,8 +96,10 @@ function update() {
 		player.body.drag.y = 0;
 	}
 
-	//var x = layer.getTileX(player.x);
-	//var y = layer.getTileY(player.y);
+	var x = layer.getTileX(player.x);
+	var y = layer.getTileY(player.y);
+	if (map.getTile(x, y) == 1)
+		gameOver();
 	//map.putTile(1, x, y);
 }
 
@@ -100,5 +109,10 @@ function fireBullet() {
 		return;
 	bullet.reset(player.x, player.y);
 	bullet.rotation = player.rotation;
-	bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 400));
+	bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
+}
+
+function gameOver() {
+	player.kill();
+	//alert('Game over!');
 }

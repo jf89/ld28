@@ -52,6 +52,5 @@ function generateMaze(width, height) {
 		for (var j = 0; j < height; ++j)
 			result[i][j] = maze[i + 1][j + 1];
 	}
-	console.log(result);
 	return result;
 }

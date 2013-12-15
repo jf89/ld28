@@ -2,6 +2,8 @@ function createTileMap(width, height) {
 	var data = new Array(width * 16 * height * 16);
 	var maze = generateMaze(width, height);
 
+	pathFinder = new PathFinder(maze);
+
 	for (var i = 0; i < width; ++i)
 		for (var j = 0; j < height; ++j) {
 			var mazePiece;
