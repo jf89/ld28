@@ -40,8 +40,10 @@ function preload() {
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');
+	game.load.image('player-debris', 'player-debris.png');
 	game.load.image('enemy', 'enemy.png');
 	game.load.image('enemy-bullet', 'enemy-bullet.png');
+	game.load.image('enemy-debris', 'enemy-debris.png');
 }
 
 function create() {
@@ -74,10 +76,10 @@ function create() {
 	player.body.setSize(8, 8, -12, -12);
 
 	playerEmitter = game.add.emitter(0, 0, 500);
-	playerEmitter.makeParticles('player-bullet');
+	playerEmitter.makeParticles('player-debris');
 	playerEmitter.gravity = 0;
 	enemyEmitter = game.add.emitter(0, 0, 500);
-	enemyEmitter.makeParticles('enemy-bullet');
+	enemyEmitter.makeParticles('enemy-debris');
 	enemyEmitter.gravity = 0;
 
 	enemy = new Enemy(768, 256);
