@@ -1,8 +1,8 @@
-var SCREEN_WIDTH  = 1024;
-var SCREEN_HEIGHT = 768;
+var SCREEN_WIDTH  = 800;
+var SCREEN_HEIGHT = 600;
 
-var MAP_WIDTH = 8;
-var MAP_HEIGHT = 8;
+var MAP_WIDTH = 7;
+var MAP_HEIGHT = 7;
 
 var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
@@ -11,13 +11,13 @@ var tileset;
 var layer;
 
 var keymap = {
-	forward:    Phaser.Keyboard.W,
-	left:       Phaser.Keyboard.A,
-	right:      Phaser.Keyboard.D,
-	brake:      Phaser.Keyboard.S,
-	shuntLeft:  Phaser.Keyboard.Q,
-	shuntRight: Phaser.Keyboard.E,
-	fire:       Phaser.Keyboard.SPACEBAR
+	forward:    Phaser.Keyboard.UP,
+	left:       Phaser.Keyboard.LEFT,
+	right:      Phaser.Keyboard.RIGHT,
+	brake:      Phaser.Keyboard.SPACEBAR,
+	shuntLeft:  Phaser.Keyboard.Z,
+	shuntRight: Phaser.Keyboard.C,
+	fire:       Phaser.Keyboard.X
 };
 var controls = [
 	new TapControl(['shuntLeft'],  1000, function() { shunt.left(); }),
@@ -44,6 +44,7 @@ function preload() {
 	game.load.image('enemy', 'enemy.png');
 	game.load.image('enemy-bullet', 'enemy-bullet.png');
 	game.load.image('enemy-debris', 'enemy-debris.png');
+	game.load.image('enemy-spawner', 'spawner.png');
 }
 
 function create() {
@@ -54,6 +55,12 @@ function create() {
 
 	for (var key in keymap)
 		keymap[key] = game.input.keyboard.addKey(keymap[key]);
+
+	enemyContainer = new EnemyContainer();
+	enemyContainer.addEnemySpawner(256,                   256);
+	enemyContainer.addEnemySpawner(256,                   MAP_HEIGHT * 512 - 256);
+	enemyContainer.addEnemySpawner(MAP_WIDTH * 512 - 256, 256);
+	enemyContainer.addEnemySpawner(MAP_WIDTH * 512 - 256, MAP_HEIGHT * 512 - 256);
 
 	playerBullets = game.add.group();
 	playerBullets.createMultiple(300, 'player-bullet');
@@ -66,15 +73,6 @@ function create() {
 	enemyBullets.setAll('anchor.x', 0.8);
 	enemyBullets.setAll('anchor.y', 0.5);
 
-	player = game.add.sprite(256, 256, 'player');
-	player.anchor.setTo(0.5, 0.5);
-	player.body.drag.x = 0;
-	player.body.drag.y = 0;
-	player.body.maxVelocity.x = 350;
-	player.body.maxVelocity.y = 350;
-	player.body.immovable = true;
-	player.body.setSize(8, 8, -12, -12);
-
 	playerEmitter = game.add.emitter(0, 0, 500);
 	playerEmitter.makeParticles('player-debris');
 	playerEmitter.gravity = 0;
@@ -82,11 +80,14 @@ function create() {
 	enemyEmitter.makeParticles('enemy-debris');
 	enemyEmitter.gravity = 0;
 
-	enemyContainer = new EnemyContainer();
-	for (var i = 0; i < MAP_WIDTH; ++i)
-		for (var j = 0; j < MAP_HEIGHT; ++j)
-			if (i != 0 || j != 0)
-				enemyContainer.addEnemy(i * 512 + 256, j * 512 + 256);
+	player = game.add.sprite(MAP_WIDTH * 256, MAP_HEIGHT * 256, 'player');
+	player.anchor.setTo(0.5, 0.5);
+	player.body.drag.x = 0;
+	player.body.drag.y = 0;
+	player.body.maxVelocity.x = 350;
+	player.body.maxVelocity.y = 350;
+	player.body.immovable = true;
+	player.body.setSize(8, 8, -12, -12);
 	game.camera.follow(player);
 }
 
@@ -133,19 +134,23 @@ function update() {
 }
 
 function fireBullet() {
-	var bullet = playerBullets.getFirstExists(false);
-	if (bullet === null)
-		return;
-	bullet.reset(player.x, player.y);
-	bullet.rotation = player.rotation;
-	bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
+	if (player.alive) {
+		var bullet = playerBullets.getFirstExists(false);
+		if (bullet === null)
+			return;
+		bullet.reset(player.x, player.y);
+		bullet.rotation = player.rotation;
+		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
+	}
 }
 
 function gameOver() {
-	player.kill();
-	playerEmitter.x = player.x;
-	playerEmitter.y = player.y;
-	playerEmitter.start(true, 2000, null, 10);
+	if (player.alive) {
+		player.kill();
+		playerEmitter.x = player.x;
+		playerEmitter.y = player.y;
+		playerEmitter.start(true, 2000, null, 10);
+	}
 }
 
 function enemyBulletHitPlayer(player, bullet) {
@@ -155,5 +160,8 @@ function enemyBulletHitPlayer(player, bullet) {
 
 function playerBulletHitEnemy(enemy, bullet) {
 	bullet.kill();
-	enemyContainer.removeEnemy(enemy.__id);
+	if (enemy.alive) {
+		var enemy = enemyContainer.enemyById(enemy.__id);
+		enemy.hit();
+	}
 }

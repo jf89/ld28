@@ -112,6 +112,10 @@ Enemy.prototype.fire = function() {
 		bullet.reset(this._sprite.x, this._sprite.y);
 		bullet.rotation = this._sprite.rotation;
 		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
-		this._nextFire = game.time.now + 300;
+		this._nextFire = game.time.now + 750;
 	}
+}
+
+Enemy.prototype.hit = function() {
+	this._container.removeEnemy(this._id);
 }

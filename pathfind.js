@@ -35,6 +35,10 @@ PathFinder.prototype._calculateDistGraph = function(maze) {
 PathFinder.prototype.nextStep = function(sx, sy, ex, ey) {
 	var sid = this._nodeId(sx, sy);
 	var eid = this._nodeId(ex, ey);
+	if (this._distGraph[sid] === undefined) {
+		console.log('DEBUG: this._distGraph[sid] === undefined');
+		console.log(sid, eid, sx, sy, ex, ey);
+	}
 	var dist = this._distGraph[sid][eid];
 	if (this._maze[sx][sy] & NORTH && this._distGraph[this._nodeId(sx, sy - 1)][eid] == dist - 1)
 		return { x: sx, y: sy - 1 };
