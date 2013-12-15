@@ -62,6 +62,7 @@ GameState.prototype.update = function() {
 		enemyContainer.update();
 		hud.update();
 		if (enemyContainer._enemies.length == 0 && !player._isDead) {
+			game.camera.target = null;
 			this._victory = true;
 			this._victoryTimeout = game.time.now + 1500;
 		}

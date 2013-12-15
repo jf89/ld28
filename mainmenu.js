@@ -25,19 +25,25 @@ var MAIN_MENU = [
 		]
 	},
 	{
-		text: 'Display',
-		action: [
-			{
-				text: 'Attempt Fullscreen',
-				action: function() {
-					game.stage.scale.startFullScreen();
-					state.dropLevel();
-				}
-			},
-			{
-				text: 'Go Back',
-				action: function() { state.dropLevel(); }
-			}
-		]
+		text: 'Fullscreen',
+		action: function() { changeState(new FullscreenState()) }
+	},
+	{
+		text: 'Controls',
+		action: function() {
+			var controlText =
+				'Cursor keys:\n' +
+				'Forward: accelerate\n' +
+				'Left/Right: rotate counter/clockwise\n' +
+				'\n' +
+				'Spacebar: fire\n' +
+				'A/D: strafe left/right\n' +
+				'S: brake\n' +
+				'\n' +
+				'\n' +
+				'Press spacebar to return to the main menu';
+			changeState(new TextScreen(controlText));
+		}
 	}
 ];
+
