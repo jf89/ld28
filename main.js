@@ -9,7 +9,6 @@ var game = new Phaser.Game(SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.AUTO, '', { prelo
 var state;
 
 function preload() {
-	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
 	game.load.tileset('tileset', 'tileset.png', 32, 32, -1, 0, 0);
 	game.load.image('player', 'player.png');
 	game.load.image('player-bullet', 'player-bullet.png');
@@ -22,7 +21,7 @@ function preload() {
 
 function create() {
 	input.create();
-	state = new MenuState();
+	state = new MenuState('Gauntlet', MAIN_MENU);
 	state.init();
 }
 

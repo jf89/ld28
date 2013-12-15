@@ -29,6 +29,11 @@ EnemyContainer.prototype.enemyById = function(id) {
 	return this._enemies[id];
 }
 
+EnemyContainer.prototype.removeAll = function() {
+	while (this._enemies.length)
+		this.removeEnemy(0);
+}
+
 function playerBulletHitEnemy(enemy, bullet) {
 	bullet.kill();
 	if (enemy.alive) {

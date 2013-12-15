@@ -102,6 +102,7 @@ Enemy.prototype.die = function() {
 		enemyEmitter.start(true, 2000, null, 10);
 		this._isDead = true;
 		this._sprite.kill();
+		this._sprite.destroy();
 	}
 }
 

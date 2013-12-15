@@ -2,6 +2,7 @@ var keymap = {
 	forward:    Phaser.Keyboard.UP,
 	left:       Phaser.Keyboard.LEFT,
 	right:      Phaser.Keyboard.RIGHT,
+	downarrow:  Phaser.Keyboard.DOWN,
 	brake:      Phaser.Keyboard.D,
 	shuntLeft:  Phaser.Keyboard.S,
 	shuntRight: Phaser.Keyboard.F,

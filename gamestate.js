@@ -16,6 +16,8 @@ function GameState() {
 }
 
 GameState.prototype.init = function() {
+	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
+
 	controls = [
 		new TapControl(['shuntLeft'],  1000, function() { player.shunt.left() }),
 		new TapControl(['shuntRight'], 1000, function() { player.shunt.right() }),
@@ -60,4 +62,14 @@ GameState.prototype.update = function() {
 }
 
 GameState.prototype.destroy = function() {
+	enemyContainer.removeAll();
+}
+
+function backgroundCleanup() {
+	map.destroy();
+	layer.destroy();
+	playerBullets.destroy();
+	enemyBullets.destroy();
+	playerEmitter.destroy();
+	enemyEmitter.destroy();
 }

@@ -12,11 +12,15 @@ function Player() {
 	game.camera.follow(this._sprite);
 
 	this._isDead = false;
+	this._gameOverDelay = 0;
 }
 
 Player.prototype.update = function() {
-	if (this._isDead)
+	if (this._isDead) {
+		if (game.time.now > this._gameOverDelay)
+			changeState(new MenuState('Game Over', GAME_OVER_MENU, backgroundCleanup));
 		return;
+	}
 
 	game.physics.collide(enemyBullets, this._sprite, enemyBulletHitPlayer);
 
@@ -72,12 +76,15 @@ Player.prototype.hit = function () {
 Player.prototype.die = function () {
 	if (this._sprite.alive) {
 		this._sprite.kill();
+		this._sprite.destroy();
 		playerEmitter.x = this._sprite.x;
 		playerEmitter.y = this._sprite.y;
 		playerEmitter.start(true, 2000, null, 10);
 	}
-	if (!this._isDead)
+	if (!this._isDead) {
+		this._gameOverDelay = game.time.now + 1000;
 		this._isDead = true;
+	}
 }
 
 function enemyBulletHitPlayer(_player, bullet) {
