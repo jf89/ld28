@@ -35,11 +35,12 @@ Enemy.prototype.update = function() {
 	if (y < 0) y = 0;
 	if (x >= MAP_WIDTH)  x = MAP_WIDTH  - 1;
 	if (y >= MAP_HEIGHT) y = MAP_HEIGHT - 1;
-	var px = Math.floor(player.x / 512);
-	var py = Math.floor(player.y / 512);
+	var pspr = player._sprite;
+	var px = Math.floor(pspr.x / 512);
+	var py = Math.floor(pspr.y / 512);
 	var gx, gy;
 
-	var dist = Math.sqrt((player.x-spr.x)*(player.x-spr.x) + (player.y-spr.y)*(player.y-spr.y));
+	var dist = Math.sqrt((pspr.x-spr.x)*(pspr.x-spr.x) + (pspr.y-spr.y)*(pspr.y-spr.y));
 	if (dist < 768)
 		this.fire();
 
@@ -48,8 +49,8 @@ Enemy.prototype.update = function() {
 		gx = goal.x * 512 + 256;
 		gy = goal.y * 512 + 256;
 	} else {
-		gx = player.x;
-		gy = player.y;
+		gx = pspr.x;
+		gy = pspr.y;
 	}
 
 	// I cannot believe this works.

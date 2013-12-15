@@ -25,20 +25,20 @@ Shunt.prototype._doShunt = function(angle) {
 	}
 }
 
-Shunt.prototype.process = function() {
+Shunt.prototype.update = function() {
 	if (this._shunting) {
 		if (game.time.now < this._stopAt) {
 			var coeff = this._shuntSpeed * (game.time.now - this._lastUpdate) / 1000;
 			var shunt = new Phaser.Point();
-			shunt.copyFrom(player.body.velocity);
+			shunt.copyFrom(player._sprite.body.velocity);
 
 			shunt.normalize();
 
-			player.x += (
+			player._sprite.x += (
 				Math.cos(this._angle) * shunt.x -
 				Math.sin(this._angle) * shunt.y
 			) * coeff;
-			player.y += (
+			player._sprite.y += (
 				Math.sin(this._angle) * shunt.x +
 				Math.cos(this._angle) * shunt.y
 			) * coeff;

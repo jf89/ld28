@@ -10,21 +10,6 @@ var map;
 var tileset;
 var layer;
 
-var keymap = {
-	forward:    Phaser.Keyboard.UP,
-	left:       Phaser.Keyboard.LEFT,
-	right:      Phaser.Keyboard.RIGHT,
-	brake:      Phaser.Keyboard.SPACEBAR,
-	shuntLeft:  Phaser.Keyboard.Z,
-	shuntRight: Phaser.Keyboard.C,
-	fire:       Phaser.Keyboard.X
-};
-var controls = [
-	new TapControl(['shuntLeft'],  1000, function() { shunt.left(); }),
-	new TapControl(['shuntRight'], 1000, function() { shunt.right(); }),
-	new TapControl(['fire'],       100,  fireBullet)
-];
-var shunt = new Shunt(500, 250);
 var pathFinder;
 var player;
 var playerBullets;
@@ -53,9 +38,6 @@ function create() {
 	layer = game.add.tilemapLayer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, tileset, map, 0);
 	layer.resizeWorld();
 
-	for (var key in keymap)
-		keymap[key] = game.input.keyboard.addKey(keymap[key]);
-
 	enemyContainer = new EnemyContainer();
 	enemyContainer.addEnemySpawner(256,                   256);
 	enemyContainer.addEnemySpawner(256,                   MAP_HEIGHT * 512 - 256);
@@ -80,82 +62,26 @@ function create() {
 	enemyEmitter.makeParticles('enemy-debris');
 	enemyEmitter.gravity = 0;
 
-	player = game.add.sprite(MAP_WIDTH * 256, MAP_HEIGHT * 256, 'player');
-	player.anchor.setTo(0.5, 0.5);
-	player.body.drag.x = 0;
-	player.body.drag.y = 0;
-	player.body.maxVelocity.x = 350;
-	player.body.maxVelocity.y = 350;
-	player.body.immovable = true;
-	player.body.setSize(8, 8, -12, -12);
-	game.camera.follow(player);
+	player = new Player();
 }
 
 function update() {
-	game.physics.collide(enemyBullets, player, enemyBulletHitPlayer);
+	player.update();
 	enemyContainer.update();
-
-	for (var i = 0; i < controls.length; ++i)
-		controls[i].pollInput();
-
-	shunt.process();
-
-	var acceleration;
-	if (keymap.forward.isDown)
-		acceleration = 300;
-	else
-		acceleration = 0;
-	player.body.acceleration.copyFrom(
-		game.physics.velocityFromAngle(player.angle, acceleration)
-	);
-
-	var angularVelocity;
-	if (keymap.left.isDown)
-		angularVelocity = -250;
-	else if (keymap.right.isDown)
-		angularVelocity = 250;
-	else
-		angularVelocity = 0;
-	player.body.angularVelocity = angularVelocity;
-
-	if (keymap.brake.isDown) {
-		player.body.drag.x = 250;
-		player.body.drag.y = 250;
-	} else {
-		player.body.drag.x = 0;
-		player.body.drag.y = 0;
-	}
-
-	var x = layer.getTileX(player.x);
-	var y = layer.getTileY(player.y);
-	if (map.getTile(x, y) == 1)
-		gameOver();
-	//map.putTile(1, x, y);
 }
 
-function fireBullet() {
-	if (player.alive) {
-		var bullet = playerBullets.getFirstExists(false);
-		if (bullet === null)
-			return;
-		bullet.reset(player.x, player.y);
-		bullet.rotation = player.rotation;
-		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
-	}
-}
+//function gameOver() {
+//	if (player.alive) {
+//		player.kill();
+//		playerEmitter.x = player.x;
+//		playerEmitter.y = player.y;
+//		playerEmitter.start(true, 2000, null, 10);
+//	}
+//}
 
-function gameOver() {
-	if (player.alive) {
-		player.kill();
-		playerEmitter.x = player.x;
-		playerEmitter.y = player.y;
-		playerEmitter.start(true, 2000, null, 10);
-	}
-}
-
-function enemyBulletHitPlayer(player, bullet) {
+function enemyBulletHitPlayer(_player, bullet) {
 	bullet.kill();
-	gameOver();
+	player.hit();
 }
 
 function playerBulletHitEnemy(enemy, bullet) {
