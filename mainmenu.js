@@ -68,6 +68,25 @@ var MAIN_MENU = [
 				'Press spacebar to return to the main menu';
 			changeState(new TextScreen(controlText));
 		}
+	},
+	{
+		text: 'Sound',
+		action: [
+			{
+				text: 'Enable',
+				action: function() {
+					SOUND_ENABLED = true;
+					state.dropLevel();
+				}
+			},
+			{
+				text: 'Disable',
+				action: function() {
+					SOUND_ENABLED = false;
+					state.dropLevel();
+				}
+			}
+		]
 	}
 ];
 

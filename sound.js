@@ -12,13 +12,24 @@ sound = {
 		game.load.audio('spawn', 'spawn.ogg');
 	},
 	create: function() {
-		this.menu         = game.add.audio('menu', 1);
-		this.shoot        = game.add.audio('shoot2', 1);
-		this.gameover     = game.add.audio('gameover', 1);
-		this.hit          = game.add.audio('hit', 1);
-		this.shunt        = game.add.audio('shunt', 1);
-		this.spawnerDeath = game.add.audio('spawnerdeath', 1);
-		this.spawnerHit   = game.add.audio('spawnerhit', 1);
-		this.spawn        = game.add.audio('spawn', 1);
+		this.menu         = new Sound('menu');
+		this.shoot        = new Sound('shoot2');
+		this.gameover     = new Sound('gameover');
+		this.hit          = new Sound('hit');
+		this.shunt        = new Sound('shunt');
+		this.spawnerDeath = new Sound('spawnerdeath');
+		this.spawnerHit   = new Sound('spawnerhit');
+		this.spawn        = new Sound('spawn');
 	}
+}
+
+var SOUND_ENABLED = true;
+
+function Sound(name) {
+	this._gameObj = game.add.audio(name, 1);
+}
+
+Sound.prototype.play = function() {
+	if (SOUND_ENABLED)
+		this._gameObj.play();
 }

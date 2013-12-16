@@ -35,7 +35,7 @@ MenuState.prototype.drawMenu = function() {
 		this._options[i] = {};
 		this._options[i].text = game.add.text(
 			game.camera.x + SCREEN_WIDTH / 2,
-			game.camera.y + SCREEN_HEIGHT / 2 + i * 100,
+			game.camera.y + SCREEN_HEIGHT / 2 + i * 100 - 100,
 			this._menu[i].text,
 			this._normalStyle
 		);
