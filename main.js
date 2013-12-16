@@ -25,6 +25,9 @@ function create() {
 		'In Gauntlet you will face a swarm\n' +
 		'of enemy spaceships. You must out\n' +
 		'manouevre them to overcome them.\n' +
+		'You must kill them at their source.\n' +
+		'They spawn from pads around the station.\n' +
+		'\n' +
 		'For this task you too shall have a\n' +
 		'spaceship.\n' +
 		'\n' +
