@@ -19,9 +19,20 @@ function preload() {
 }
 
 function create() {
+	var intro =
+		'Welcome to Gauntlet\n' +
+		'\n' +
+		'In Gauntlet you will face a swarm\n' +
+		'of enemy spaceships. You must out\n' +
+		'manouevre them to overcome them.\n' +
+		'For this task you too shall have a\n' +
+		'spaceship.\n' +
+		'\n' +
+		'Unlike them, though...\n' +
+		'... You only get one.';
 	input.create();
 	sound.create();
-	state = new MenuState('Gauntlet', MAIN_MENU);
+	state = new TextScreen(intro);
 	state.init();
 }
 
