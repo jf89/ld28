@@ -29,9 +29,9 @@ GameState.prototype.init = function() {
 	game.load.tilemap('tilemap', null, createTileMap(MAP_WIDTH, MAP_HEIGHT), Phaser.Tilemap.TILED_JSON);
 
 	controls = [
-		new TapControl(['shuntLeft'],  1000, function() { player.shunt.left() }),
-		new TapControl(['shuntRight'], 1000, function() { player.shunt.right() }),
-		new TapControl(['fire'],       100,  function() { player.fireBullet() })
+		new TapControl(['shuntLeft'],  PLAYER_SHUNT_COOLDOWN, function() { player.shunt.left() }),
+		new TapControl(['shuntRight'], PLAYER_SHUNT_COOLDOWN, function() { player.shunt.right() }),
+		new TapControl(['fire'],       PLAYER_FIRE_COOLDOWN,  function() { player.fireBullet() })
 	];
 
 	map = game.add.tilemap('tilemap');

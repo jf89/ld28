@@ -7,7 +7,7 @@ function EnemySpawner(x, y, id, container) {
 	this._isDead = false;
 	this._container = container;
 
-	this._nextSpawn = game.time.now + 4500;
+	this._nextSpawn = game.time.now + SPAWN_INITIAL_DELAY + Math.random()*SPAWN_VARIANCE;
 	this._health = 5;
 }
 
@@ -26,7 +26,7 @@ EnemySpawner.prototype.update = function() {
 		if (this._sprite.x>game.camera.x && this._sprite.x<game.camera.x+SCREEN_WIDTH &&
 		    this._sprite.y>game.camera.y && this._sprite.y<game.camera.y+SCREEN_HEIGHT)
 			sound.spawn.play();
-		this._nextSpawn = game.time.now + 2500;
+		this._nextSpawn = game.time.now + SPAWN_DELAY + Math.random()*SPAWN_VARIANCE;
 		this._container.addEnemy(this._sprite.x, this._sprite.y);
 	}
 }
@@ -50,7 +50,7 @@ EnemySpawner.prototype.hit = function() {
 		enemyEmitter.x = this._sprite.x;
 		enemyEmitter.y = this._sprite.y;
 		enemyEmitter.start(true, 2000, null, 5);
-		this._nextSpawn = game.time.now + 2500;
+		this._nextSpawn = game.time.now + SPAWN_DELAY + Math.random()*SPAWN_VARIANCE;
 	} else
 		this._container.removeEnemy(this._id);
 }

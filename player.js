@@ -1,12 +1,12 @@
 function Player(x, y) {
-	this.shunt = new Shunt(500, 250);
+	this.shunt = new Shunt(PLAYER_SHUNT_DURATION, PLAYER_SHUNT_VELOCITY);
 
 	this._sprite = game.add.sprite(x, y, 'player');
 	this._sprite.anchor.setTo(0.5, 0.5);
 	this._sprite.body.drag.x = 0;
 	this._sprite.body.drag.y = 0;
-	this._sprite.body.maxVelocity.x = 350;
-	this._sprite.body.maxVelocity.y = 350;
+	this._sprite.body.maxVelocity.x = PLAYER_MAX_VELOCITY / Math.sqrt(2);
+	this._sprite.body.maxVelocity.y = PLAYER_MAX_VELOCITY / Math.sqrt(2);
 	this._sprite.body.immovable = true;
 	this._sprite.body.setSize(8, 8, -12, -12);
 	game.camera.follow(this._sprite);
@@ -27,7 +27,7 @@ Player.prototype.update = function() {
 
 	if (this.shields < 3 && game.time.now > this.shieldRespawnDelay) {
 		this.shields += 1;
-		this.shieldRespawnDelay = game.time.now + 5000;
+		this.shieldRespawnDelay = game.time.now + PLAYER_SHIELD_RESPAWN_DELAY;
 	}
 
 	game.physics.collide(enemyBullets, this._sprite, enemyBulletHitPlayer);
@@ -36,7 +36,7 @@ Player.prototype.update = function() {
 
 	var acceleration;
 	if (keymap.forward.isDown)
-		acceleration = 300;
+		acceleration = PLAYER_ACCELERATION;
 	else
 		acceleration = 0;
 	this._sprite.body.acceleration.copyFrom(
@@ -45,16 +45,16 @@ Player.prototype.update = function() {
 
 	var angularVelocity;
 	if (keymap.left.isDown)
-		angularVelocity = -250;
+		angularVelocity = -PLAYER_ANGULAR_VELOCITY;
 	else if (keymap.right.isDown)
-		angularVelocity = 250;
+		angularVelocity = PLAYER_ANGULAR_VELOCITY;
 	else
 		angularVelocity = 0;
 	this._sprite.body.angularVelocity = angularVelocity;
 
 	if (keymap.brake.isDown) {
-		this._sprite.body.drag.x = 250;
-		this._sprite.body.drag.y = 250;
+		this._sprite.body.drag.x = PLAYER_BRAKE_DRAG / Math.sqrt(2);
+		this._sprite.body.drag.y = PLAYER_BRAKE_DRAG / Math.sqrt(2);
 	} else {
 		this._sprite.body.drag.x = 0;
 		this._sprite.body.drag.y = 0;
@@ -74,7 +74,7 @@ Player.prototype.fireBullet = function() {
 		sound.shoot.play();
 		bullet.reset(this._sprite.x, this._sprite.y);
 		bullet.rotation = this._sprite.rotation;
-		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
+		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, BULLET_SPEED));
 	}
 }
 
@@ -84,7 +84,7 @@ Player.prototype.hit = function() {
 		this.die();
 	else {
 		sound.hit.play();
-		this.shieldRespawnDelay = game.time.now + 5000;
+		this.shieldRespawnDelay = game.time.now + PLAYER_SHIELD_RESPAWN_DELAY;
 		playerEmitter.x = this._sprite.x;
 		playerEmitter.y = this._sprite.y;
 		playerEmitter.start(true, 2000, null, 3);

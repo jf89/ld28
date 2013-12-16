@@ -1,8 +1,8 @@
 function Enemy(x, y, id, container) {
 	this._sprite = game.add.sprite(x, y, 'enemy');
 	this._sprite.anchor.setTo(0.5, 0.5);
-	this._sprite.body.maxVelocity.x = 250;
-	this._sprite.body.maxVelocity.y = 250;
+	this._sprite.body.maxVelocity.x = ENEMY_MAX_VELOCITY / Math.sqrt(2);
+	this._sprite.body.maxVelocity.y = ENEMY_MAX_VELOCITY / Math.sqrt(2);
 	this._sprite.body.immovable = true;
 	this._sprite.body.setSize(8, 8, -12, -12);
 	this._nextFire = 0;
@@ -116,8 +116,8 @@ Enemy.prototype.fire = function() {
 			sound.shoot.play();
 		bullet.reset(this._sprite.x, this._sprite.y);
 		bullet.rotation = this._sprite.rotation;
-		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, 500));
-		this._nextFire = game.time.now + 750;
+		bullet.body.velocity.copyFrom(game.physics.velocityFromAngle(bullet.angle, BULLET_SPEED));
+		this._nextFire = game.time.now + ENEMY_FIRE_COOLDOWN;
 	}
 }
 
