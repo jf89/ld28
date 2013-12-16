@@ -81,6 +81,10 @@ function createTileMap(width, height) {
 				}
 		}
 
+	sanitise(playerCoords.x, playerCoords.y, data, width);
+	for (var i = 0; i < spawnerCoords.length; ++i)
+		sanitise(spawnerCoords[i].x, spawnerCoords[i].y, data, width);
+
 	var dy = 16 * width;
 	for (var i = 1; i < width * 16 - 1; ++i)
 		for (var j = 1; j < height * 16 - 1; j ++) {
@@ -140,6 +144,19 @@ function createTileMap(width, height) {
 		]
 	};
 	return tileMap;
+}
+
+function sanitise(x, y, data, width) {
+	for (var i = 0; i < 16; ++i)
+		for (var j = 0; j < 16; ++j)
+			if (Math.sqrt((i-7.5)*(i-7.5) + (j-7.5)*(j-7.5)) < 6) {
+				var datapos =
+					y * 16 * 16 * width +
+					x * 16 +
+					j * 16 * width +
+					i;
+				data[datapos] = 2;
+			}
 }
 
 function identity(x, y, mazePiece) {
