@@ -32,7 +32,9 @@ function create() {
 		'spaceship.\n' +
 		'\n' +
 		'Unlike them, though...\n' +
-		'... You only get one.';
+		'... You only get one.\n' +
+		'\n' +
+		'[press space to continue]';
 	input.create();
 	sound.create();
 	state = new TextScreen(intro);
